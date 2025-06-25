@@ -2,10 +2,6 @@
 line-length = 99
 target-version = ['py39']
 
-[tool.isort]
-profile = "black"
-line_length = 99
-
 [tool.mypy]
 exclude = ["tests", "setup.py"]
 ignore_missing_imports = true
@@ -43,7 +39,6 @@ black = "^25.1.0"
 mypy = "^1.16.1"
 pytest-cov = "^6.2.1"
 ruff = "^0.12.0"
-isort = "^6.0.1"
 pre-commit = "^4.2.0"
 
 [tool.ruff]
