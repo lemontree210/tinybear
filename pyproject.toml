@@ -24,11 +24,15 @@ ignore_errors = true
 name = "tinybear"
 version = "0.1.0"
 description = ""
-authors = ["Dmitry Kolomatskiy <58207913+lemontree210@users.noreply.github.com>"]
+authors = ["Dmitry K <58207913+lemontree210@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+toml = "^0.10.2"
+pyyaml = "^6.0.2"
+openpyxl = "^3.1.5"
+beautifulsoup4 = "^4.13.4"
 
 [tool.ruff]
 line-length = 99
