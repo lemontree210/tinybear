@@ -11,13 +11,12 @@ def check_encoding_of_file(file: Path) -> str:
     """
     encoding = "utf-8-sig"
     try:
-        fh = file.open(encoding="utf-8")
-        fh.read()
+        with file.open(encoding="utf-8") as fh:
+            fh.read()
     except UnicodeDecodeError:
-        fh = file.open(encoding="cp1251")
-        fh.read()
-        encoding = "cp1251"
-    fh.close()
+        with file.open(encoding="cp1251") as fh:
+            fh.read()
+            encoding = "cp1251"
 
     return encoding
 
