@@ -51,3 +51,9 @@ def test_read_json_toml_yaml_raises_exception_with_bad_yaml():
         print(f"TEST: file {file}")
         with pytest.raises(ParserError):
             read_json_toml_yaml(file)
+
+
+def test_read_json_toml_yaml_raises_file_not_found_for_nonexistent_file(tmp_path):
+    non_existent_file = tmp_path / "nonexistent_file.json"
+    with pytest.raises(FileNotFoundError, match=str(non_existent_file)):
+        read_json_toml_yaml(non_existent_file)
