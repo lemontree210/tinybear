@@ -66,14 +66,16 @@ def read_json_toml_yaml(path_to_file: Path) -> Union[dict[str, Any], list[str]]:
 
     extension = path_to_file.suffix.replace(".", "")
 
-    data = None
     error_msg = f"Could not read file {path_to_file} because of malformed data"
 
     with path_to_file.open(encoding="utf-8") as fh:
         content = fh.read()
 
     if extension == "json":
-        data = json.loads(content)
+        try:
+            data = json.loads(content)
+        except json.JSONDecodeError:
+            raise ParserError(error_msg)
     elif extension == "toml":
         try:
             data = toml.loads(content)
@@ -85,7 +87,7 @@ def read_json_toml_yaml(path_to_file: Path) -> Union[dict[str, Any], list[str]]:
     else:
         raise TypeError(f"File {path_to_file.name} cannot be converted")
 
-    if not isinstance(data, (dict, list)):
+    if not isinstance(data, (dict, list)) or not data:
         raise ParserError(error_msg)
 
     return data
