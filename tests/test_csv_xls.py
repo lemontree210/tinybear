@@ -48,9 +48,26 @@ def test_convert_xls_to_csv():
         output_content = fh.read()
 
     with path_to_gold_standard_csv_file.open(encoding="utf-8") as fh:
-        gold_standard = fh.read()
+        gold_standard_content = fh.read()
 
-    assert output_content == gold_standard
+    assert output_content == gold_standard_content
+    path_to_output_csv_file.unlink()
+
+
+def test_convert_xls_to_csv_raises_file_exists_error_when_file_exists_and_overwrite_false():
+    path_to_excel_file = DIR_WITH_TEST_FILES / "feature_profile_belarusian.xlsx"
+    path_to_output_csv_file = DIR_WITH_TEST_FILES / "test_convert_excel_to_csv_exists.csv"
+
+    # Create the output file first
+    path_to_output_csv_file.touch()
+
+    with pytest.raises(FileExistsError, match=f"{path_to_output_csv_file.name} already exists"):
+        convert_xls_to_csv(
+            path_to_input_excel_file=path_to_excel_file,
+            sheet_name="Лист1",
+            path_to_output_csv_file=path_to_output_csv_file,
+            overwrite=False,
+        )
     path_to_output_csv_file.unlink()
 
 
