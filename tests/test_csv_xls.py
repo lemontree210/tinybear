@@ -42,16 +42,10 @@ def test_convert_xls_to_csv():
         path_to_output_csv_file=path_to_output_csv_file,
     )
 
-    assert path_to_output_csv_file.exists()
-
-    with path_to_output_csv_file.open(encoding="utf-8") as fh:
-        output_content = fh.read()
-
-    with path_to_gold_standard_csv_file.open(encoding="utf-8") as fh:
-        gold_standard_content = fh.read()
-
-    assert output_content == gold_standard_content
-    path_to_output_csv_file.unlink()
+    check_existence_of_output_csv_file_and_compare_with_gold_standard(
+        output_file=path_to_output_csv_file,
+        gold_standard_file=path_to_gold_standard_csv_file,
+    )
 
 
 def test_convert_xls_to_csv_raises_file_exists_error_when_file_exists_and_overwrite_false():
