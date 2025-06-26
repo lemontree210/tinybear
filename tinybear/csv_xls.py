@@ -195,7 +195,7 @@ def read_dict_from_2_csv_columns(
 
     # for mypy typechecking only
     if not isinstance(header_row, list) or not isinstance(data_rows, list):
-        raise TypeError
+        raise TypeError  # pragma: no cover
 
     if not (key_col in header_row and val_col in header_row):
         raise KeyError(f"Name of {key_col=} or {val_col=} not found in {header_row=}")
