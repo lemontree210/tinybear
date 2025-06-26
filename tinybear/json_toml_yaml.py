@@ -51,7 +51,8 @@ def check_yaml_file(path_to_file: Path, verbose: bool = True) -> None:
         )  # make sure it's printed nicely and shows user where the problem in file is
         raise ParserError(f"Error reading YAML from file {path_to_file}")
 
-    assert isinstance(yaml_loaded, (list, dict))
+    if not isinstance(yaml_loaded, (list, dict)):
+        raise ParserError(f"Could not read file {path_to_file} because of malformed data")
 
     if verbose:
         logging.info(f"TEST: YAML DATA {yaml_loaded}")
@@ -65,27 +66,26 @@ def read_json_toml_yaml(path_to_file: Path) -> Union[dict[str, Any], list[str]]:
 
     extension = path_to_file.suffix.replace(".", "")
 
-    if extension == "yaml":
-        check_yaml_file(path_to_file, verbose=False)
-
     data = None
-    error_msg = f"Could not convert file {path_to_file} because of malformed data"
+    error_msg = f"Could not read file {path_to_file} because of malformed data"
 
     with path_to_file.open(encoding="utf-8") as fh:
         content = fh.read()
-        if extension == "json":
-            data = json.loads(content)
-        elif extension == "toml":
-            try:
-                data = toml.loads(content)
-            except toml.TomlDecodeError:
-                raise ParserError(error_msg)
-        elif extension == "yaml":
-            data = yaml.load(content, Loader=yaml.Loader)
-        else:
-            raise TypeError(f"File {path_to_file.name} cannot be converted")
+
+    if extension == "json":
+        data = json.loads(content)
+    elif extension == "toml":
+        try:
+            data = toml.loads(content)
+        except toml.TomlDecodeError:
+            raise ParserError(error_msg)
+    elif extension == "yaml":
+        check_yaml_file(path_to_file=path_to_file)
+        data = yaml.load(content, Loader=yaml.Loader)
+    else:
+        raise TypeError(f"File {path_to_file.name} cannot be converted")
 
     if not isinstance(data, (dict, list)):
-        raise ParserError()
+        raise ParserError(error_msg)
 
     return data
