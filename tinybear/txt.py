@@ -87,7 +87,7 @@ def move_line(
 ) -> None:
     """Cut one line and insert it before the other."""
 
-    with file.open(encoding="utf8") as fh:
+    with file.open(encoding="utf-8") as fh:
         lines = fh.readlines()
 
         if isinstance(line_number_to_insert_before, str) and line_number_to_insert_before in (
