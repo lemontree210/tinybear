@@ -18,28 +18,24 @@ ignore_errors = true
 
 [tool.poetry]
 name = "tinybear"
-version = "0.1.0"
+version = "0.1.1"
 description = "Where you don't need pandas yet. Tools to work with TXT, CSV, Excel etc."
 authors = ["Dmitry K <58207913+lemontree210@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-toml = "^0.10.2"
-pyyaml = "^6.0.2"
-openpyxl = "^3.1.5"
-beautifulsoup4 = "^4.13.4"
+toml = {version = "^0.10.2", optional = false}
+pyyaml = {version = "^6.0.2", optional = false}
+openpyxl = {version = "^3.1.5", optional = false}
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
-setuptools = "^80.9.0"
-wheel = "^0.45.1"
-twine = "^6.1.0"
 black = "^25.1.0"
 mypy = "^1.16.1"
-pytest-cov = "^6.2.1"
 ruff = "^0.12.0"
 pre-commit = "^4.2.0"
+pytest = "^8.4.1"
+pytest-cov = "^6.2.1"
 
 [tool.ruff]
 line-length = 99
