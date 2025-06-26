@@ -26,7 +26,7 @@ def test_read_json_toml_yaml():
     for file_name in (
         "json_OK_language_names_to_new_ids.json",
         "socio_aromanian_gold_standard.yaml",
-        "simple_test.toml",
+        "toml_OK_simple.toml",
     ):
         file_path = DIR_WITH_TEST_FILES / file_name
         data = read_json_toml_yaml(file_path)
@@ -61,3 +61,9 @@ def test_read_json_toml_yaml_raises_exception_with_bad_yaml():
         print(f"TEST: file {file}")
         with pytest.raises(ParserError):
             read_json_toml_yaml(file)
+
+
+def test_read_json_toml_yaml_raises_parser_error_for_malformed_toml():
+    """Test that malformed TOML files raise ParserError."""
+    with pytest.raises(ParserError, match="malformed data"):
+        read_json_toml_yaml(DIR_WITH_TEST_FILES / "toml_bad_syntax.toml")
