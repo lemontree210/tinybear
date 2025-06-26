@@ -1,0 +1,8 @@
+# Simple test TOML file
+
+[section1]
+key1 = "value1"
+key2 = 42
+
+[section2]
+items = ["item1", "item2"]
