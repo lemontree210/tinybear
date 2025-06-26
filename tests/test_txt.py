@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import pytest
 
@@ -74,6 +75,14 @@ def test_read_non_empty_lines_from_txt_file():
         "баз",
     ]
     PATH_TO_TEST_OUTPUT_TXT_FILE.unlink()
+
+
+def test_read_non_empty_lines_from_txt_file_raises_file_not_found():
+    non_existent_file = Path("non_existent_file.txt")
+    with pytest.raises(FileNotFoundError) as exc_info:
+        read_non_empty_lines_from_txt_file(non_existent_file)
+
+    assert str(non_existent_file) in str(exc_info.value)
 
 
 def test_read_plain_text_from_file():
