@@ -24,9 +24,9 @@ def test_check_yaml_file_fails_with_invalid_data():
 
 def test_read_json_toml_yaml():
     for file_name in (
-        "json_OK_language_names_to_new_ids.json",  # JSON test
-        "socio_aromanian_gold_standard.yaml",  # YAML test
-        "simple_test.toml",  # TOML test
+        "json_OK_language_names_to_new_ids.json",
+        "socio_aromanian_gold_standard.yaml",
+        "simple_test.toml",
     ):
         file_path = DIR_WITH_TEST_FILES / file_name
         data = read_json_toml_yaml(file_path)
