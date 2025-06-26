@@ -23,18 +23,28 @@ def test_check_yaml_file_fails_with_invalid_data():
 
 
 def test_read_json_toml_yaml():
-    # TOML files are not used yet, they are tested in a different project
     for file_name in (
-        "json_OK_language_names_to_new_ids.json",
-        "socio_aromanian_gold_standard.yaml",
+        "json_OK_language_names_to_new_ids.json",  # JSON test
+        "socio_aromanian_gold_standard.yaml",  # YAML test
+        "simple_test.toml",  # TOML test
     ):
-        data = read_json_toml_yaml(DIR_WITH_TEST_FILES / file_name)
+        file_path = DIR_WITH_TEST_FILES / file_name
+        data = read_json_toml_yaml(file_path)
         assert isinstance(data, (dict, list))
-        assert len(data.keys()) > 0
+
+        if file_name.endswith(".toml"):  # For TOML, check specific structure
+            assert "section1" in data
+            assert data["section1"]["key1"] == "value1"
 
     for file in DIR_WITH_TEST_FILES.glob("yaml_OK*.yaml"):
         print(f"TEST: file {file}")
         assert isinstance(read_json_toml_yaml(file), (dict, list))
+
+
+def test_read_json_toml_yaml_raises_file_not_found_for_nonexistent_file(tmp_path):
+    non_existent_file = tmp_path / "nonexistent_file.json"
+    with pytest.raises(FileNotFoundError, match=str(non_existent_file)):
+        read_json_toml_yaml(non_existent_file)
 
 
 def test_read_json_toml_yaml_raises_exception_with_unsupported_file_type():
@@ -51,9 +61,3 @@ def test_read_json_toml_yaml_raises_exception_with_bad_yaml():
         print(f"TEST: file {file}")
         with pytest.raises(ParserError):
             read_json_toml_yaml(file)
-
-
-def test_read_json_toml_yaml_raises_file_not_found_for_nonexistent_file(tmp_path):
-    non_existent_file = tmp_path / "nonexistent_file.json"
-    with pytest.raises(FileNotFoundError, match=str(non_existent_file)):
-        read_json_toml_yaml(non_existent_file)
