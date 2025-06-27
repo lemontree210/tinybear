@@ -5,21 +5,15 @@ from tinybear.exceptions import ParsingError
 
 def validate_html(html: str, is_text_at_root_level_allowed: bool) -> None:
     """
-    Validate that HTML conforms to our requirements.
+    Validate that the HTML string is well-formed and only contains allowed tags.
 
-    Requirements:
-    - Only <p>, <ul>, <ol>, and <li> tags are allowed
-    - No <br> tags (should be converted to paragraphs)
-    - <ul> and <ol> must only contain <li> elements
-    - <li> elements must be direct children of <ul> or <ol>
-    - No empty <p> tags
-    - No nested <p> tags
-    - No text nodes at the root level (must be wrapped in a block element)
-    - No `<` or `>` signs that aren't HTML entities
-    - No unescaped & characters
+    Args:
+        html: The HTML string to validate
+        is_text_at_root_level_allowed: If True, allow text nodes at the root level.
+            If False (default), all text must be wrapped in block elements.
 
     Raises:
-        ParsingError: If the HTML doesn't conform to the requirements
+        ParsingError: If the HTML is not well-formed or contains disallowed tags
     """
     if not html:
         return  # Empty string is valid
@@ -34,6 +28,9 @@ def validate_html(html: str, is_text_at_root_level_allowed: bool) -> None:
     _validate_tags(soup)
     _validate_list_structure(soup)
     _validate_paragraphs(soup)
+
+    # check cases that bs4 will not catch because of autocorrection of tags
+    _check_for_unclosed_tags(html)
 
 
 def _check_absence_of_root_level_text(soup: BeautifulSoup) -> None:
@@ -53,6 +50,115 @@ def _check_absence_of_unescaped_ampersand(html: str) -> None:
             position = semicolon_pos + 1
         else:
             position += 1
+
+
+def _is_self_closing_tag(tag_name: str) -> bool:
+    """Check if a tag is self-closing."""
+    return tag_name in ("br", "img", "hr", "input", "meta", "link")
+
+
+def _is_special_tag(tag_name: str) -> bool:
+    """Check if a tag is a special tag like !doctype or comment."""
+    return tag_name in ("!doctype", "!--")
+
+
+def _find_tag_end(html: str, start_pos: int) -> tuple[str, int, bool]:
+    """Extract tag name, end position, and if it's a closing tag."""
+    if start_pos >= len(html) or html[start_pos] != "<":
+        return "", start_pos, False
+
+    tag_start = start_pos + 1
+    is_closing = tag_start < len(html) and html[tag_start] == "/"
+    if is_closing:
+        tag_start += 1
+
+    tag_end = tag_start
+    while tag_end < len(html) and (html[tag_end].isalnum() or html[tag_end] in "-_"):
+        tag_end += 1
+
+    tag_name = html[tag_start:tag_end].lower()
+    return tag_name, tag_end, is_closing
+
+
+def _check_nested_tags(html: str, tag_name: str, start_pos: int) -> None:
+    """Check for properly nested tags."""
+    closing_tag = f"</{tag_name}>"
+    next_open = html.find(f"<{tag_name}", start_pos + 1)
+    next_close = html.find(closing_tag, start_pos + 1)
+
+    if next_open == -1 or (next_close != -1 and next_close < next_open):
+        if next_close == -1:
+            raise ParsingError(
+                f"Unclosed <{tag_name}> tag at position {start_pos}: "
+                f"{html[max(0, start_pos-20):start_pos+20]}..."
+            )
+        return
+
+    # Handle nested tags
+    nested_level = 1
+    pos = start_pos + 1
+    while pos < len(html) and nested_level > 0:
+        next_open = html.find(f"<{tag_name}", pos)
+        next_close = html.find(f"</{tag_name}", pos)
+
+        if next_open != -1 and (next_close == -1 or next_open < next_close):
+            nested_level += 1
+            pos = next_open + 1
+        elif next_close != -1:
+            nested_level -= 1
+            pos = next_close + 1
+        else:
+            break
+
+    if nested_level > 0:
+        raise ParsingError(
+            f"Unclosed <{tag_name}> tag starting at position {start_pos}: "
+            f"{html[max(0, start_pos-20):start_pos+20]}..."
+        )
+
+
+def _check_for_unclosed_tags(html: str) -> None:
+    """Check for unclosed HTML tags in the raw HTML text.
+
+    This checks for patterns that indicate unclosed tags, such as:
+    - Unclosed angle brackets: <tag without matching >
+    - Unclosed tags: <p> without </p>
+
+    This problem cannot be caught by bs4, so we have to analyze the raw HTML.
+    """
+    i = 0
+    n = len(html)
+
+    while i < n:
+        if html[i] != "<":
+            i += 1
+            continue
+
+        tag_name, tag_end, is_closing = _find_tag_end(html, i)
+        if not tag_name:
+            i += 1
+            continue
+
+        # Handle special tags like !doctype or comments
+        if _is_special_tag(tag_name):
+            gt_pos = html.find(">", i)
+            if gt_pos == -1:
+                raise ParsingError(f"Unclosed tag at position {i}: {html[max(0, i-20):i+20]}...")
+            i = gt_pos + 1
+            continue
+
+        # Find the end of the current tag
+        gt_pos = html.find(">", i)
+        if gt_pos == -1:
+            raise ParsingError(
+                f"Unclosed angle bracket at position {i}: {html[max(0, i-20):i+20]}..."
+            )
+
+        # Check for unclosed tags if it's an opening tag that's not self-closing
+        if not is_closing and not _is_self_closing_tag(tag_name):
+            _check_nested_tags(html=html, tag_name=tag_name, start_pos=i)
+
+        i = gt_pos + 1
 
 
 def _validate_entity_with_ampersand(html: str, position: int) -> int:

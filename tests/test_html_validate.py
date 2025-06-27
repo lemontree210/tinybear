@@ -59,6 +59,12 @@ INVALID_HTML_CASES = [
     ("<p>Unclosed tag<p>", "Empty <p> tags are not allowed"),
     ("<p>Invalid <tag</p>", "Tag 'tag<' is not allowed"),
     ("<p>Text <b>bold text</p> more text", "Text must be wrapped in a block element"),
+    # Test cases for unclosed tags that will not be caught by bs4's parser because of autoclosing
+    (
+        "<p>Unclosed <a href='#'>link</p>",
+        "Unclosed <a> tag at position 12: <p>Unclosed <a href='#'>link</p>...",
+    ),
+    ("<p>Unclosed at end <", "Unclosed <p> tag at position 0: <p>Unclosed at end <..."),
 ]
 
 
