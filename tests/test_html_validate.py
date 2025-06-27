@@ -56,14 +56,13 @@ INVALID_HTML_CASES = [
     # Unclosed tags
     ("<p>Unclosed tag<p>", "Empty or nested <p> tags are not allowed"),
     ("<p>Invalid <tag</p>", "Tag 'tag<' is not allowed"),
-    ("<p>Text <b>bold text</p> more text", "Unclosed <b> tag"),
+    ("<p>Text <b>bold text</p> more text", "Unclosed tag(s) found"),
     # Unescaped < signs in content (must be &lt;)
     ("<p>5 < 10</p>", "Unescaped '<' found in text content. Use '&lt;' instead."),
     ("<p>if x < 5: print(x)</p>", "Unescaped '<' found in text content. Use '&lt;' instead."),
-    # Test cases for unclosed tags that will not be caught by bs4's parser because of autoclosing
     (
         "<p>Unclosed <a href='#'>link</p>",
-        "Unclosed <a> tag at position 12: <p>Unclosed <a href='#'>link</p>...",
+        "Unclosed tags found:a",
     ),
     ("<p>Unclosed at end <", "Unescaped '<' found in text content. Use '&lt;' instead."),
 ]

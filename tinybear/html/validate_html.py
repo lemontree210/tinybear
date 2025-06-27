@@ -52,6 +52,8 @@ def validate_html(
     _check_list_structure(soup)
     _check_paragraphs(soup)
 
+    _check_for_unclosed_tags(html)
+
     if not is_text_at_root_level_allowed:
         _check_for_root_level_text(soup)
 
@@ -119,6 +121,24 @@ def _check_for_unescaped_less_than(html: str) -> None:
     pattern = re.compile(r"<(?![a-zA-Z/])")
     if pattern.search(html):
         raise ParsingError("Unescaped '<' found in text content. Use '&lt;' instead.")
+
+
+def _check_for_unclosed_tags(html: str) -> None:
+    # Extract all tags from the string
+    tags = re.findall(r"<(/?\w+)[^>]*>", html)
+    # Count opening and closing tags
+    tag_counts: dict[str, int] = {}
+    for tag in tags:
+        if tag.startswith("/"):
+            tag_name = tag[1:]
+            tag_counts[tag_name] = tag_counts.get(tag_name, 0) - 1
+        else:
+            tag_counts[tag] = tag_counts.get(tag, 0) + 1
+    # Tags with non-zero count are unbalanced
+    unclosed = [tag for tag, count in tag_counts.items() if count != 0]
+
+    if unclosed:
+        raise ParsingError(f"Unclosed tags found:{', '.join(unclosed)}")
 
 
 def _check_list_structure(soup: BeautifulSoup) -> None:
