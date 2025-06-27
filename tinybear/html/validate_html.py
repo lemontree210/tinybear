@@ -157,7 +157,7 @@ def _check_for_unclosed_tags(html: str) -> None:
 def _check_list_structure(soup: BeautifulSoup) -> None:
     """Validate the structure of lists and list items."""
     # Check list structure
-    for list_tag in soup.find_all(["ul", "ol"]):
+    for list_tag in soup(["ul", "ol"]):
         for child in list_tag.children:
             if isinstance(child, Tag) and child.name != "li":
                 raise ParsingError(
@@ -166,7 +166,7 @@ def _check_list_structure(soup: BeautifulSoup) -> None:
                 )
 
     # Check that <li> elements are direct children of <ul> or <ol>
-    for li in soup.find_all("li"):
+    for li in soup("li"):
         parent = li.parent
         if parent.name not in ["ul", "ol"]:
             raise ParsingError(
@@ -214,7 +214,7 @@ def _check_nested_tags(html: str, tag_name: str, start_pos: int) -> None:
 
 def _check_paragraphs(soup: BeautifulSoup) -> None:
     """Validate paragraph structure and content."""
-    paragraphs = soup.find_all("p")
+    paragraphs = soup("p")
 
     # Check for empty paragraphs
     for p in paragraphs:
