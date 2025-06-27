@@ -9,14 +9,16 @@ from tinybear.html import validate_html
 VALID_HTML_CASES = [
     # Empty string is valid
     "",
-    # Simple paragraph
-    "<p>Valid paragraph</p>",
-    # Multiple paragraphs
-    "<p>First paragraph</p><p>Second paragraph</p>",
-    # Simple list
-    "<ul><li>Item 1</li><li>Item 2</li></ul>",
-    # Ordered list
-    "<ol><li>First</li><li>Second</li></ol>",
+    # Basic structure
+    "<html><head><title>Title</title></head><body><p>Content</p></body></html>",
+    # Text formatting
+    "<p>This is <b>bold</b>, <i>italic</i>, <u>underlined</u>, <em>emphasized</em>, <strong>strong</strong> text.</p>",
+    "<p>Subscript: H<sub>2</sub>O, Superscript: x<sup>2</sup></p>",
+    # Links
+    "<p>Visit <a href='https://example.com'>example</a> for more info</p>",
+    # Lists
+    "<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>",
+    "<ol><li>First</li><li>Second</li><li>Third</li></ol>",
     # Nested lists
     """<ul>
         <li>Item 1</li>
@@ -30,6 +32,22 @@ VALID_HTML_CASES = [
     </ul>""",
     # Mixed content
     "<p>Text before</p><ul><li>Item</li></ul><p>Text after</p>",
+    # Complex nesting
+    """<html>
+    <head>
+        <title>Test Page</title>
+    </head>
+    <body>
+        <h1>Welcome</h1>
+        <p>This is a <strong>test</strong> of <em>HTML</em> validation.</p>
+        <p>Features:</p>
+        <ul>
+            <li>Supports <b>bold</b> and <i>italic</i> text</li>
+            <li>Handles <a href='#'>links</a></li>
+            <li>Works with <sub>subscripts</sub> and <sup>superscripts</sup></li>
+        </ul>
+    </body>
+</html>""",
 ]
 
 # Invalid HTML test cases with expected error messages
