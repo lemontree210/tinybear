@@ -55,10 +55,12 @@ INVALID_HTML_CASES = [
     ("<p>Invalid entity: &invalid;</p>", "Invalid HTML entity: &invalid; in: &invalid;</p>"),
     ("<p>Missing semicolon: &amp</p>", "Text contains unescaped &: &amp</p>"),
     # Unclosed tags
-    # Note that < and > signs are allowed in HTML5 as long as they are not parts of HTML entities
     ("<p>Unclosed tag<p>", "Empty <p> tags are not allowed"),
     ("<p>Invalid <tag</p>", "Tag 'tag<' is not allowed"),
-    ("<p>Text <b>bold text</p> more text", "Text must be wrapped in a block element"),
+    ("<p>Text <b>bold text</p> more text", "Unclosed <b> tag"),
+    # Unescaped < signs in content (must be &lt;)
+    ("<p>5 < 10</p>", "Unescaped '<' found in text content. Use '&lt;' instead."),
+    ("<p>if x < 5: print(x)</p>", "Unescaped '<' found in text content. Use '&lt;' instead."),
     # Test cases for unclosed tags that will not be caught by bs4's parser because of autoclosing
     (
         "<p>Unclosed <a href='#'>link</p>",
