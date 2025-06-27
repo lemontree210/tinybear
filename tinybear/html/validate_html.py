@@ -1,3 +1,4 @@
+import re
 from collections.abc import Iterable
 
 from bs4 import BeautifulSoup, Tag
@@ -43,6 +44,7 @@ def validate_html(
         return  # Empty string is valid
 
     _check_for_unescaped_ampersand(html)
+    _check_for_unescaped_less_than(html)
 
     soup = BeautifulSoup(html, "html5lib")
 
@@ -52,9 +54,6 @@ def validate_html(
 
     if not is_text_at_root_level_allowed:
         _check_for_root_level_text(soup)
-
-    # check cases that bs4 will not catch because of autocorrection of tags
-    _check_for_unclosed_tags(html)
 
 
 def _check_all_tags_are_allowed(soup: BeautifulSoup, allowed_tags: Iterable[str]) -> None:
@@ -115,52 +114,11 @@ def _check_for_unescaped_ampersand(html: str) -> None:
             position += 1
 
 
-def _check_for_unclosed_tags(html: str) -> None:
-    """Check for unclosed HTML tags in the raw HTML text.
-
-    This checks for patterns that indicate unclosed tags, such as:
-    - Unclosed angle brackets: <tag without matching > or just a less than sign
-    - Unclosed tags: <p> without </p>
-
-
-    This problem cannot be caught by bs4, so we have to analyze the raw HTML.
-    """
-    current_pos = 0
-
-    while current_pos < len(html):
-        if html[current_pos] != "<":
-            current_pos += 1
-            continue
-
-        tag_name, tag_end_pos, is_closing_tag = _find_tag_end(html, current_pos)
-        if not tag_name:
-            current_pos += 1
-            continue
-
-        # Handle special tags like !doctype or comments
-        if _is_special_tag(tag_name):
-            closing_angle_pos = html.find(">", current_pos)
-            if closing_angle_pos == -1:
-                raise ParsingError(
-                    f"Unclosed tag at position {current_pos}: "
-                    f"{html[max(0, current_pos-20):current_pos+20]}..."
-                )
-            current_pos = closing_angle_pos + 1
-            continue
-
-        # Find the end of the current tag
-        closing_angle_pos = html.find(">", current_pos)
-        if closing_angle_pos == -1:
-            raise ParsingError(
-                f"Unclosed angle bracket at position {current_pos}: "
-                f"{html[max(0, current_pos-20):current_pos+20]}..."
-            )
-
-        # Check for unclosed tags if it's an opening tag that's not self-closing
-        if not is_closing_tag and not _is_self_closing_tag(tag_name):
-            _check_nested_tags(html=html, tag_name=tag_name, start_pos=current_pos)
-
-        current_pos = closing_angle_pos + 1
+def _check_for_unescaped_less_than(html: str) -> None:
+    """Check for a solitary '<' in the text content (not followed by a letter or an "/")."""
+    pattern = re.compile(r"<(?![a-zA-Z/])")
+    if pattern.search(html):
+        raise ParsingError("Unescaped '<' found in text content. Use '&lt;' instead.")
 
 
 def _check_list_structure(soup: BeautifulSoup) -> None:

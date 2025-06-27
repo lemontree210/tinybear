@@ -65,7 +65,7 @@ INVALID_HTML_CASES = [
         "<p>Unclosed <a href='#'>link</p>",
         "Unclosed <a> tag at position 12: <p>Unclosed <a href='#'>link</p>...",
     ),
-    ("<p>Unclosed at end <", "Unclosed <p> tag at position 0: <p>Unclosed at end <..."),
+    ("<p>Unclosed at end <", "Unescaped '<' found in text content. Use '&lt;' instead."),
 ]
 
 
