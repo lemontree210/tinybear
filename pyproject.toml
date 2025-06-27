@@ -18,8 +18,8 @@ ignore_errors = true
 
 [tool.poetry]
 name = "tinybear"
-version = "0.1.1"
-description = "Where you don't need pandas yet. Tools to work with TXT, CSV, Excel etc."
+version = "0.1.2"
+description = "Where you don't need pandas yet. Tools to work with TXT, CSV, HTML, XSLX etc."
 authors = ["Dmitry K <58207913+lemontree210@users.noreply.github.com>"]
 readme = "README.md"
 
