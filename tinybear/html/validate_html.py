@@ -219,15 +219,12 @@ def _check_paragraphs(soup: BeautifulSoup) -> None:
     """Validate paragraph structure and content."""
     paragraphs = soup("p")
 
-    # Check for empty paragraphs
+    # Check for empty or nested paragraphs
+    # Due to how parser works, nested paragraphs will end up being transformed into
+    # sequence of paragraphs with empty paragraph at the end.
     for p in paragraphs:
         if not p.get_text(strip=True):
-            raise ParsingError("Empty <p> tags are not allowed")
-
-    # Check for nested paragraphs
-    for p in paragraphs:
-        if p.find_parent("p"):
-            raise ParsingError("Nested <p> tags are not allowed")
+            raise ParsingError("Empty or nested <p> tags are not allowed")
 
 
 def _find_tag_end(html: str, start_pos: int) -> tuple[str, int, bool]:

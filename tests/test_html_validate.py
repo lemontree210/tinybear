@@ -43,10 +43,9 @@ INVALID_HTML_CASES = [
     ("<ul><p>Not an li</p></ul>", "<ul> can only contain <li> elements"),
     ("<li>Not in a list</li>", "<li> must be a direct child of <ul> or <ol>"),
     # Empty paragraphs
-    ("<p></p>", "Empty <p> tags are not allowed"),
-    ("<p>   </p>", "Empty <p> tags are not allowed"),
-    # Nested paragraphs
-    ("<p><p>Nested</p></p>", "Nested <p> tags are not allowed"),
+    ("<p></p>", "Empty or nested <p> tags are not allowed"),
+    ("<p>   </p>", "Empty or nested <p> tags are not allowed"),
+    ("<p>One, then <p>Nested</p></p>", "Empty or nested <p> tags are not allowed"),
     # Text at root level
     ("Text not in paragraph", "Text must be wrapped in a block element"),
     ("<p>Paragraph</p>And some text", "Text must be wrapped in a block element"),
@@ -55,7 +54,7 @@ INVALID_HTML_CASES = [
     ("<p>Invalid entity: &invalid;</p>", "Invalid HTML entity: &invalid; in: &invalid;</p>"),
     ("<p>Missing semicolon: &amp</p>", "Text contains unescaped &: &amp</p>"),
     # Unclosed tags
-    ("<p>Unclosed tag<p>", "Empty <p> tags are not allowed"),
+    ("<p>Unclosed tag<p>", "Empty or nested <p> tags are not allowed"),
     ("<p>Invalid <tag</p>", "Tag 'tag<' is not allowed"),
     ("<p>Text <b>bold text</p> more text", "Unclosed <b> tag"),
     # Unescaped < signs in content (must be &lt;)
