@@ -1,8 +1,8 @@
 import pytest
 
 from tests.paths import DIR_WITH_TEST_FILES
+from tinybear.exceptions import ParsingError
 from tinybear.json_toml_yaml import (
-    ParserError,
     check_yaml_file,
     read_json_toml_yaml,
 )
@@ -16,7 +16,7 @@ def test_check_yaml_file_passes_with_valid_data():
 
 def test_check_yaml_file_fails_with_invalid_data():
     for file in DIR_WITH_TEST_FILES.glob("yaml_bad*.yaml"):
-        with pytest.raises(ParserError) as e:
+        with pytest.raises(ParsingError) as e:
             check_yaml_file(file)
 
         print("TEST: error message received - ", e)
@@ -59,13 +59,13 @@ def test_read_json_toml_yaml_raises_exception_with_unsupported_file_type():
 def test_read_json_toml_yaml_raises_exception_with_bad_yaml():
     for file in DIR_WITH_TEST_FILES.glob("yaml_bad*.yaml"):
         print(f"TEST: file {file}")
-        with pytest.raises(ParserError):
+        with pytest.raises(ParsingError):
             read_json_toml_yaml(file)
 
 
 def test_read_json_toml_yaml_raises_parser_error_for_malformed_toml():
     """Test that malformed TOML files raise ParserError."""
-    with pytest.raises(ParserError, match="malformed data"):
+    with pytest.raises(ParsingError, match="malformed data"):
         read_json_toml_yaml(DIR_WITH_TEST_FILES / "toml_bad_syntax.toml")
 
 
@@ -73,5 +73,5 @@ def test_read_json_toml_yaml_raises_parser_error_for_empty_toml():
     """Test that empty TOML files raise ParserError."""
 
     for empty_file in ("json_empty.json", "toml_empty.toml", "yaml_empty.yaml"):
-        with pytest.raises(ParserError, match="malformed data"):
+        with pytest.raises(ParsingError, match="malformed data"):
             read_json_toml_yaml(DIR_WITH_TEST_FILES / empty_file)

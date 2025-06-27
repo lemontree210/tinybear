@@ -8,7 +8,9 @@ from typing import Any, Union
 # stubs exist but somehow mypy doesn't see them even after installation
 import toml  # type: ignore
 import yaml  # type: ignore
-from yaml.parser import ParserError  # type: ignore
+from yaml.parser import ParserError as YamlParserError  # type: ignore
+
+from tinybear.exceptions import ParsingError
 
 YAML_INDENT = " " * 2
 
@@ -38,21 +40,21 @@ def check_yaml_file(path_to_file: Path, verbose: bool = True) -> None:
     counter = Counter(top_level_dict_keys)
     for key in counter:
         if counter[key] > 1:
-            raise ParserError(
+            raise ParsingError(
                 f"File {path_to_file} contains more than one dictionary key <{key}> at"
                 " the top level"
             )
 
     try:
         yaml_loaded = yaml.load(data, Loader=yaml.Loader)
-    except ParserError as e:
+    except YamlParserError as e:
         logging.info(
             e
         )  # make sure it's printed nicely and shows user where the problem in file is
-        raise ParserError(f"Error reading YAML from file {path_to_file}")
+        raise ParsingError(f"Error reading YAML from file {path_to_file}")
 
     if not isinstance(yaml_loaded, (list, dict)):
-        raise ParserError(f"Could not read file {path_to_file} because of malformed data")
+        raise ParsingError(f"Could not read file {path_to_file} because of malformed data")
 
     if verbose:
         logging.info(f"TEST: YAML DATA {yaml_loaded}")
@@ -75,12 +77,12 @@ def read_json_toml_yaml(path_to_file: Path) -> Union[dict[str, Any], list[str]]:
         try:
             data = json.loads(content)
         except json.JSONDecodeError:
-            raise ParserError(error_msg)
+            raise ParsingError(error_msg)
     elif extension == "toml":
         try:
             data = toml.loads(content)
         except toml.TomlDecodeError:
-            raise ParserError(error_msg)
+            raise ParsingError(error_msg)
     elif extension == "yaml":
         check_yaml_file(path_to_file=path_to_file)
         data = yaml.load(content, Loader=yaml.Loader)
@@ -88,6 +90,6 @@ def read_json_toml_yaml(path_to_file: Path) -> Union[dict[str, Any], list[str]]:
         raise TypeError(f"File {path_to_file.name} cannot be converted")
 
     if not isinstance(data, (dict, list)) or not data:
-        raise ParserError(error_msg)
+        raise ParsingError(error_msg)
 
     return data
