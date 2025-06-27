@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup, Tag
 from tinybear.exceptions import ParsingError
 
 
-def validate_html(html: str, is_text_at_root_level_allowed: bool) -> None:
+def validate_html(html: str, is_text_at_root_level_allowed: bool = False) -> None:
     """
     Validate that the HTML string is well-formed and only contains allowed tags.
 
