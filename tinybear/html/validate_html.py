@@ -162,43 +162,6 @@ def _check_list_structure(soup: BeautifulSoup) -> None:
             )
 
 
-def _check_nested_tags(html: str, tag_name: str, start_pos: int) -> None:
-    """Check for properly nested tags."""
-    closing_tag = f"</{tag_name}>"
-    next_open = html.find(f"<{tag_name}", start_pos + 1)
-    next_close = html.find(closing_tag, start_pos + 1)
-
-    if next_open == -1 or (next_close != -1 and next_close < next_open):
-        if next_close == -1:
-            raise ParsingError(
-                f"Unclosed <{tag_name}> tag at position {start_pos}: "
-                f"{html[max(0, start_pos-20):start_pos+20]}..."
-            )
-        return
-
-    # Handle nested tags
-    nested_level = 1
-    pos = start_pos + 1
-    while pos < len(html) and nested_level > 0:
-        next_open = html.find(f"<{tag_name}", pos)
-        next_close = html.find(f"</{tag_name}", pos)
-
-        if next_open != -1 and (next_close == -1 or next_open < next_close):
-            nested_level += 1
-            pos = next_open + 1
-        elif next_close != -1:
-            nested_level -= 1
-            pos = next_close + 1
-        else:
-            break
-
-    if nested_level > 0:
-        raise ParsingError(
-            f"Unclosed <{tag_name}> tag starting at position {start_pos}: "
-            f"{html[max(0, start_pos-20):start_pos+20]}..."
-        )
-
-
 def _check_paragraphs(soup: BeautifulSoup) -> None:
     """Validate paragraph structure and content."""
     paragraphs = soup("p")

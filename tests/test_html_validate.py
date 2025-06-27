@@ -56,7 +56,7 @@ INVALID_HTML_CASES = [
     # Unclosed tags
     ("<p>Unclosed tag<p>", "Empty or nested <p> tags are not allowed"),
     ("<p>Invalid <tag</p>", "Tag 'tag<' is not allowed"),
-    ("<p>Text <b>bold text</p> more text", "Unclosed tag(s) found"),
+    ("<p>Text <b>bold text</p> more text", "Unclosed tags found"),
     # Unescaped < signs in content (must be &lt;)
     ("<p>5 < 10</p>", "Unescaped '<' found in text content. Use '&lt;' instead."),
     ("<p>if x < 5: print(x)</p>", "Unescaped '<' found in text content. Use '&lt;' instead."),
