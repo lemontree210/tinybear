@@ -46,12 +46,12 @@ def validate_html(
 
     soup = BeautifulSoup(html, "html5lib")
 
-    if not is_text_at_root_level_allowed:
-        _check_for_root_level_text(soup)
-
     _check_all_tags_are_allowed(soup=soup, allowed_tags=allowed_tags)
     _check_list_structure(soup)
     _check_paragraphs(soup)
+
+    if not is_text_at_root_level_allowed:
+        _check_for_root_level_text(soup)
 
     # check cases that bs4 will not catch because of autocorrection of tags
     _check_for_unclosed_tags(html)
@@ -91,10 +91,57 @@ def _check_entity_with_ampersand(html: str, position: int) -> int:
 
 
 def _check_for_root_level_text(soup: BeautifulSoup) -> None:
-    """Validate that there's no text at the root level."""
+    """Validate that there's no text at the root level or after block elements.
+
+    This function checks for text nodes that are not properly wrapped in block elements.
+    It allows text in certain inline elements but requires other text to be in block elements.
+    """
+    # First check direct children of the root for any text nodes
     for child in soup.children:
         if isinstance(child, str) and child.strip():
-            raise ParsingError(f"Text must be wrapped in a block element, found: {child[:50]}...")
+            raise ParsingError("Text must be wrapped in a block element")
+
+    # Then check text nodes in valid inline elements
+    for element in soup.find_all(True):
+        # Skip block elements - they handle their own text validation
+        if element.name in [
+            "p",
+            "ul",
+            "ol",
+            "li",
+            "div",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "blockquote",
+            "pre",
+            "hr",
+        ]:
+            continue
+
+        # Check for text nodes that aren't just whitespace
+        for child in element.children:
+            if (
+                isinstance(child, str)
+                and child.strip()
+                and element.name
+                not in [
+                    "a",
+                    "b",
+                    "i",
+                    "em",
+                    "strong",
+                    "code",
+                    "span",
+                    "html",
+                    "head",
+                    "body",
+                ]
+            ):
+                raise ParsingError("Text must be wrapped in a block element")
 
 
 def _check_for_unescaped_ampersand(html: str) -> None:
