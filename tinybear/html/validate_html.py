@@ -102,48 +102,6 @@ def _check_for_root_level_text(soup: BeautifulSoup) -> None:
         if isinstance(child, str) and child.strip():
             raise ParsingError("Text must be wrapped in a block element")
 
-    # Then check text nodes in valid inline elements
-    for element in soup.find_all(True):
-        # Skip block elements - they handle their own text validation
-        if element.name in [
-            "p",
-            "ul",
-            "ol",
-            "li",
-            "div",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "blockquote",
-            "pre",
-            "hr",
-        ]:
-            continue
-
-        # Check for text nodes that aren't just whitespace
-        for child in element.children:
-            if (
-                isinstance(child, str)
-                and child.strip()
-                and element.name
-                not in [
-                    "a",
-                    "b",
-                    "i",
-                    "em",
-                    "strong",
-                    "code",
-                    "span",
-                    "html",
-                    "head",
-                    "body",
-                ]
-            ):
-                raise ParsingError("Text must be wrapped in a block element")
-
 
 def _check_for_unescaped_ampersand(html: str) -> None:
     """Check that there are no unescaped ampersands."""
