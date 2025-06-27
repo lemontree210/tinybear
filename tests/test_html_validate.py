@@ -50,17 +50,15 @@ INVALID_HTML_CASES = [
     # Text at root level
     ("Text not in paragraph", "Text must be wrapped in a block element"),
     ("<p>Paragraph</p>And some text", "Text must be wrapped in a block element"),
-    # Unescaped HTML - these are now considered valid as they're common in text
-    # ("<p>5 < 10</p>", "Text contains unescaped <: <p>5 < 10</p>"),
-    # ("<p>10 > 5</p>", "Text contains unescaped >: <p>10 > 5</p>"),
-    # ("<p>Use < and > for tags</p>", "Text contains unescaped <: <p>Use < and > for tags</p>"),
-    # Note: BeautifulSoup handles unclosed tags by auto-closing them,
-    # so we don't need to test for them separately
-    # as they'll be caught by other validation rules (like empty paragraphs or invalid tags)
-    # These are still invalid:
+    # Unescaped ampersand
     ("<p>AT&T</p>", "Text contains unescaped &: &T</p>"),
     ("<p>Invalid entity: &invalid;</p>", "Invalid HTML entity: &invalid; in: &invalid;</p>"),
     ("<p>Missing semicolon: &amp</p>", "Text contains unescaped &: &amp</p>"),
+    # Unclosed tags
+    # Note that < and > signs are allowed in HTML5 as long as they are not parts of HTML entities
+    ("<p>Unclosed tag<p>", "Empty <p> tags are not allowed"),
+    ("<p>Invalid <tag</p>", "Tag 'tag<' is not allowed"),
+    ("<p>Text <b>bold text</p> more text", "Text must be wrapped in a block element"),
 ]
 
 
