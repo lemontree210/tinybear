@@ -92,9 +92,8 @@ def test_validate_html_with_escaped_chars(html):
 @pytest.mark.parametrize("html,expected_error", INVALID_HTML_CASES)
 def test_validate_html_invalid(html, expected_error):
     """Test that invalid HTML raises the expected error."""
-    with pytest.raises(ParsingError) as excinfo:
+    with pytest.raises(ParsingError, match=expected_error):
         validate_html(html, is_text_at_root_level_allowed=False)
-    assert expected_error in str(excinfo.value)
 
 
 def test_validate_html_with_allowed_text_at_root_level():
@@ -109,21 +108,18 @@ def test_validate_html_with_unclosed_angle_bracket():
     validate_html("<p>Test</p>", is_text_at_root_level_allowed=False)
 
     # Test that invalid tags are still caught
-    with pytest.raises(ParsingError) as excinfo:
+    with pytest.raises(ParsingError, match=r"Tag 'invalid' is not allowed"):
         validate_html("<invalid>Test</invalid>", is_text_at_root_level_allowed=False)
-    assert "Tag 'invalid' is not allowed" in str(excinfo.value)
 
 
 def test_validate_html_with_unescaped_ampersand_without_semicolon():
     """Test that an unescaped ampersand without a semicolon raises an error."""
     # Test with an ampersand not followed by a semicolon
     invalid_html = "<p>This is a test with an unescaped ampersand: &invalid</p>"
-    with pytest.raises(ParsingError) as excinfo:
+    with pytest.raises(ParsingError, match=r"Text contains unescaped &: &invalid"):
         validate_html(invalid_html, is_text_at_root_level_allowed=False)
-    assert "Text contains unescaped &: &invalid" in str(excinfo.value)
 
     # Test with an ampersand at the end of the string
     invalid_html = "<p>Ends with ampersand &"
-    with pytest.raises(ParsingError) as excinfo:
+    with pytest.raises(ParsingError, match=r"Text contains unescaped &: &"):
         validate_html(invalid_html, is_text_at_root_level_allowed=False)
-    assert "Text contains unescaped &: &" in str(excinfo.value)
