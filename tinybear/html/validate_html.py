@@ -97,7 +97,8 @@ def _check_for_root_level_text(soup: BeautifulSoup) -> None:
     It allows text in certain inline elements but requires other text to be in block elements.
     """
     # First check direct children of the root for any text nodes
-    for child in soup.children:
+    body = soup.find("body")  # even if there's no <body> tag, html5lib will wrap content in one
+    for child in body.children:
         if isinstance(child, str) and child.strip():
             raise ParsingError("Text must be wrapped in a block element")
 
