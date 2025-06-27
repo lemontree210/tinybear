@@ -172,31 +172,3 @@ def _check_paragraphs(soup: BeautifulSoup) -> None:
     for p in paragraphs:
         if not p.get_text(strip=True):
             raise ParsingError("Empty or nested <p> tags are not allowed")
-
-
-def _find_tag_end(html: str, start_pos: int) -> tuple[str, int, bool]:
-    """Extract tag name, end position, and if it's a closing tag."""
-    if start_pos >= len(html) or html[start_pos] != "<":
-        return "", start_pos, False
-
-    tag_start = start_pos + 1
-    is_closing = tag_start < len(html) and html[tag_start] == "/"
-    if is_closing:
-        tag_start += 1
-
-    tag_end = tag_start
-    while tag_end < len(html) and (html[tag_end].isalnum() or html[tag_end] in "-_"):
-        tag_end += 1
-
-    tag_name = html[tag_start:tag_end].lower()
-    return tag_name, tag_end, is_closing
-
-
-def _is_self_closing_tag(tag_name: str) -> bool:
-    """Check if a tag is self-closing."""
-    return tag_name in ("br", "img", "hr", "input", "meta", "link")
-
-
-def _is_special_tag(tag_name: str) -> bool:
-    """Check if a tag is a special tag like !doctype or comment."""
-    return tag_name in ("!doctype", "!--")
