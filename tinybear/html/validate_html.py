@@ -113,41 +113,45 @@ def _check_for_unclosed_tags(html: str) -> None:
     - Unclosed angle brackets: <tag without matching >
     - Unclosed tags: <p> without </p>
 
+
     This problem cannot be caught by bs4, so we have to analyze the raw HTML.
     """
-    i = 0
-    n = len(html)
+    current_pos = 0
 
-    while i < n:
-        if html[i] != "<":
-            i += 1
+    while current_pos < len(html):
+        if html[current_pos] != "<":
+            current_pos += 1
             continue
 
-        tag_name, tag_end, is_closing = _find_tag_end(html, i)
+        tag_name, tag_end_pos, is_closing_tag = _find_tag_end(html, current_pos)
         if not tag_name:
-            i += 1
+            current_pos += 1
             continue
 
         # Handle special tags like !doctype or comments
         if _is_special_tag(tag_name):
-            gt_pos = html.find(">", i)
-            if gt_pos == -1:
-                raise ParsingError(f"Unclosed tag at position {i}: {html[max(0, i-20):i+20]}...")
-            i = gt_pos + 1
+            closing_angle_pos = html.find(">", current_pos)
+            if closing_angle_pos == -1:
+                raise ParsingError(
+                    f"Unclosed tag at position {current_pos}: "
+                    f"{html[max(0, current_pos-20):current_pos+20]}..."
+                )
+            current_pos = closing_angle_pos + 1
             continue
 
         # Find the end of the current tag
-        gt_pos = html.find(">", i)
-        if gt_pos == -1:
+        closing_angle_pos = html.find(">", current_pos)
+        if closing_angle_pos == -1:
             raise ParsingError(
-                f"Unclosed angle bracket at position {i}: {html[max(0, i-20):i+20]}..."
+                f"Unclosed angle bracket at position {current_pos}: "
+                f"{html[max(0, current_pos-20):current_pos+20]}..."
             )
 
         # Check for unclosed tags if it's an opening tag that's not self-closing
-        if not is_closing and not _is_self_closing_tag(tag_name):
-            _check_nested_tags(html=html, tag_name=tag_name, start_pos=i)
+        if not is_closing_tag and not _is_self_closing_tag(tag_name):
+            _check_nested_tags(html=html, tag_name=tag_name, start_pos=current_pos)
 
-        i = gt_pos + 1
+        current_pos = closing_angle_pos + 1
 
 
 def _check_list_structure(soup: BeautifulSoup) -> None:
