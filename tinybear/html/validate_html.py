@@ -10,7 +10,10 @@ def validate_html(
     allowed_tags: Iterable[str] = (
         "a",
         "b",
+        "body",
         "em",
+        "head",
+        "html",
         "i",
         "li",
         "ol",
@@ -41,7 +44,7 @@ def validate_html(
 
     _check_for_unescaped_ampersand(html)
 
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "html5lib")
 
     if not is_text_at_root_level_allowed:
         _check_for_root_level_text(soup)
@@ -110,7 +113,7 @@ def _check_for_unclosed_tags(html: str) -> None:
     """Check for unclosed HTML tags in the raw HTML text.
 
     This checks for patterns that indicate unclosed tags, such as:
-    - Unclosed angle brackets: <tag without matching >
+    - Unclosed angle brackets: <tag without matching > or just a less than sign
     - Unclosed tags: <p> without </p>
 
 
