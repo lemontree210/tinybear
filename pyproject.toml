@@ -57,5 +57,3 @@ select = ["E", "F", "I", "N", "PL", "UP", "ERA", "A", "C4", "DTZ", "ISC", "T20",
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
