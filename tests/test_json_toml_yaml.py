@@ -64,13 +64,13 @@ def test_read_json_toml_yaml_raises_exception_with_bad_yaml():
 
 
 def test_read_json_toml_yaml_raises_parser_error_for_malformed_toml():
-    """Test that malformed TOML files raise ParserError."""
+    """Test that malformed TOML files raise ParsingError."""
     with pytest.raises(ParsingError, match="malformed data"):
         read_json_toml_yaml(DIR_WITH_TEST_FILES / "toml_bad_syntax.toml")
 
 
 def test_read_json_toml_yaml_raises_parser_error_for_empty_toml():
-    """Test that empty TOML files raise ParserError."""
+    """Test that empty TOML files raise ParsingError."""
 
     for empty_file in ("json_empty.json", "toml_empty.toml", "yaml_empty.yaml"):
         with pytest.raises(ParsingError, match="malformed data"):
