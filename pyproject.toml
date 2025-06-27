@@ -25,9 +25,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-toml = {version = "^0.10.2", optional = false}
-pyyaml = {version = "^6.0.2", optional = false}
-openpyxl = {version = "^3.1.5", optional = false}
+toml = "^0.10.2"
+pyyaml = "^6.0.2"
+openpyxl = "^3.1.5"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
