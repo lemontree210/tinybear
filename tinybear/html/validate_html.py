@@ -1,14 +1,35 @@
+from collections.abc import Iterable
+
 from bs4 import BeautifulSoup, Tag
 
 from tinybear.exceptions import ParsingError
 
 
-def validate_html(html: str, is_text_at_root_level_allowed: bool = False) -> None:
+def validate_html(
+    html: str,
+    allowed_tags: Iterable[str] = (
+        "p",
+        "ul",
+        "ol",
+        "li",
+        "a",
+        "i",
+        "b",
+        "em",
+        "strong",
+        "u",
+        "sup",
+        "sub",
+    ),
+    is_text_at_root_level_allowed: bool = False,
+) -> None:
     """
     Validate that the HTML string is well-formed and only contains allowed tags.
 
     Args:
         html: The HTML string to validate
+        allowed_tags: Iterable of allowed HTML tag names (e.g., ['p', 'a', 'strong']).
+            Defaults to a basic (quite restrictive) set of tags.
         is_text_at_root_level_allowed: If True, allow text nodes at the root level.
             If False (default), all text must be wrapped in block elements.
 
@@ -25,7 +46,7 @@ def validate_html(html: str, is_text_at_root_level_allowed: bool = False) -> Non
     if not is_text_at_root_level_allowed:
         _check_for_root_level_text(soup)
 
-    _check_all_tags_are_allowed(soup)
+    _check_all_tags_are_allowed(soup=soup, allowed_tags=allowed_tags)
     _check_list_structure(soup)
     _check_paragraphs(soup)
 
@@ -33,9 +54,8 @@ def validate_html(html: str, is_text_at_root_level_allowed: bool = False) -> Non
     _check_for_unclosed_tags(html)
 
 
-def _check_all_tags_are_allowed(soup: BeautifulSoup) -> None:
+def _check_all_tags_are_allowed(soup: BeautifulSoup, allowed_tags: Iterable[str]) -> None:
     """Validate that only allowed tags are present in the HTML."""
-    allowed_tags = {"p", "ul", "ol", "li", "a", "i", "b", "em", "strong", "u", "sup", "sub"}
     for tag in soup.find_all(True):
         if tag.name not in allowed_tags:
             raise ParsingError(
