@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup, Tag
 
 from tinybear.exceptions import ParsingError
 
+TAG_PATTERN = re.compile(r"<(/?\w+)[^>]*>")
+UNESCAPED_LTE_PATTERN = re.compile(r"<(?![a-zA-Z/])")
+
 
 def validate_html(
     html: str,
@@ -125,14 +128,13 @@ def _check_for_unescaped_ampersand(html: str) -> None:
 
 def _check_for_unescaped_less_than(html: str) -> None:
     """Check for a solitary '<' in the text content (not followed by a letter or an "/")."""
-    pattern = re.compile(r"<(?![a-zA-Z/])")
-    if pattern.search(html):
+    if UNESCAPED_LTE_PATTERN.search(html):
         raise ParsingError("Unescaped '<' found in text content. Use '&lt;' instead.")
 
 
 def _check_for_unclosed_tags(html: str) -> None:
     # Extract all tags from the string
-    tags = re.findall(r"<(/?\w+)[^>]*>", html)
+    tags = TAG_PATTERN.findall(html)
     # Count opening and closing tags
     tag_counts: dict[str, int] = {}
     for tag in tags:
