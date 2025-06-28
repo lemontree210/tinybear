@@ -18,16 +18,18 @@ ignore_errors = true
 
 [tool.poetry]
 name = "tinybear"
-version = "0.1.1"
-description = "Where you don't need pandas yet. Tools to work with TXT, CSV, Excel etc."
+version = "0.2.0"
+description = "Where you don't need pandas yet. Tools to work with TXT, CSV, HTML, XLSX etc."
 authors = ["Dmitry K <58207913+lemontree210@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-toml = {version = "^0.10.2", optional = false}
-pyyaml = {version = "^6.0.2", optional = false}
-openpyxl = {version = "^3.1.5", optional = false}
+beautifulsoup4 = "^4.13.4"
+html5lib = "^1.1"
+openpyxl = "^3.1.5"
+pyyaml = "^6.0.2"
+toml = "^0.10.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
@@ -56,5 +58,3 @@ select = ["E", "F", "I", "N", "PL", "UP", "ERA", "A", "C4", "DTZ", "ISC", "T20",
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
