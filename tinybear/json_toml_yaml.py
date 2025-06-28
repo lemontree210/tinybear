@@ -84,12 +84,8 @@ def read_json_toml_yaml(path_to_file: Path) -> Union[dict[str, Any], list[str]]:
         except toml.TomlDecodeError:
             raise ParsingError(error_msg)
     elif extension == "yaml":
-        check_yaml_file(path_to_file=path_to_file)
-        try:
-            data = yaml.load(content, Loader=yaml.Loader)
-        except YamlParserError as e:
-            logging.info(e)  # Log the error for debugging purposes
-            raise ParsingError(f"Error reading YAML from file {path_to_file}")
+        check_yaml_file(path_to_file=path_to_file)  # error will be raised there in case of error
+        data = yaml.load(content, Loader=yaml.Loader)
     else:
         raise TypeError(f"File {path_to_file.name} cannot be converted")
 
