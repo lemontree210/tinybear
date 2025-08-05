@@ -2,10 +2,7 @@ import pytest
 
 from tests.paths import DIR_WITH_TEST_FILES
 from tinybear.exceptions import ParsingError
-from tinybear.json_toml_yaml import (
-    check_yaml_file,
-    read_json_toml_yaml,
-)
+from tinybear.json_toml_yaml import check_yaml_file, read_json_toml_yaml
 
 
 def test_check_yaml_file_passes_with_valid_data():

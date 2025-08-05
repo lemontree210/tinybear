@@ -3,7 +3,7 @@ from pathlib import Path
 
 import mammoth
 
-from tinybear._paths import DEFAULT_OUTPUT_DIR, DEFAULT_INPUT_DIR
+from tinybear._paths import DEFAULT_INPUT_DIR, DEFAULT_OUTPUT_DIR
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,7 +19,9 @@ r[style-name='Code'] => code
 """
 
 
-def convert_one_to_html(path_to_file: Path, output_dir: Path = DEFAULT_OUTPUT_DIR, print_html: bool = True) -> Path:
+def convert_one_to_html(
+    path_to_file: Path, output_dir: Path = DEFAULT_OUTPUT_DIR, print_html: bool = True
+) -> Path:
 
     with path_to_file.open(mode="rb") as docx_file:
         result = mammoth.convert_to_html(docx_file, style_map=STYLE_MAP)
@@ -36,11 +38,15 @@ def convert_one_to_html(path_to_file: Path, output_dir: Path = DEFAULT_OUTPUT_DI
     return output_path
 
 
-def convert_all(input_dir: Path = DEFAULT_INPUT_DIR, output_dir: Path = DEFAULT_OUTPUT_DIR, print_html: bool = True) -> None:
+def convert_all(
+    input_dir: Path = DEFAULT_INPUT_DIR,
+    output_dir: Path = DEFAULT_OUTPUT_DIR,
+    print_html: bool = True,
+) -> None:
     for file in input_dir.glob("*.doc*"):
         logging.info(f"Converting {file.name}")
         convert_one_to_html(path_to_file=file, output_dir=output_dir, print_html=print_html)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     convert_all()
