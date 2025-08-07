@@ -1,7 +1,7 @@
 import re
 
 from tests.paths import DIR_WITH_TEST_FILES
-from tinybear.html.from_docx import read_from_doc, convert_file_from_doc
+from tinybear.html.from_docx import read_from_doc, convert_file_from_doc, convert_all_docs
 
 CUSTOM_STYLE_MAP = """
 b => b
@@ -17,11 +17,12 @@ p[style-name='Heading4'] => strong
 p[style-name='Heading 4'] => strong
 """
 
-test_docx_path = DIR_WITH_TEST_FILES / "html" / "from_docx" / "default_style.docx"
+test_docx_dir = DIR_WITH_TEST_FILES / "html" / "from_docx"
+test_docx_file = test_docx_dir / "default_style.docx"
 
 
 def test_read_from_doc():
-    html = read_from_doc(test_docx_path)
+    html = read_from_doc(test_docx_file)
     patterns = [
         (r"<h1>This is the document title</h1>", "Title -> h1"),
         (r"<h1>Heading level 1</h1>", "Heading1 -> h1"),
@@ -41,7 +42,7 @@ def test_read_from_doc():
 
 def test_read_from_doc_with_custom_style_map():
 
-    html = read_from_doc(test_docx_path, style_map=CUSTOM_STYLE_MAP)
+    html = read_from_doc(test_docx_file, style_map=CUSTOM_STYLE_MAP)
     patterns = [
         (r"<h1>This is the document title</h1>", "Title -> h1"),
         (r"<h2>Heading level 1</h2>", "Heading1 -> h2"),
@@ -60,7 +61,7 @@ def test_read_from_doc_with_custom_style_map():
 
 
 def test_convert_file_from_doc(tmp_path):
-    output_path = convert_file_from_doc(test_docx_path, output_dir=tmp_path, print_html=False)
+    output_path = convert_file_from_doc(test_docx_file, output_dir=tmp_path, print_html=False)
     assert output_path.exists()
     html = output_path.read_text(encoding="utf-8")
     # Spot check for a couple of tags
@@ -70,7 +71,7 @@ def test_convert_file_from_doc(tmp_path):
 
 def test_convert_file_from_doc_with_custom_style_map(tmp_path):
     output_path = convert_file_from_doc(
-        test_docx_path, output_dir=tmp_path, print_html=False, style_map=CUSTOM_STYLE_MAP
+        test_docx_file, output_dir=tmp_path, print_html=False, style_map=CUSTOM_STYLE_MAP
     )
     assert output_path.exists()
     html = output_path.read_text(encoding="utf-8")
@@ -81,7 +82,16 @@ def test_convert_file_from_doc_with_custom_style_map(tmp_path):
 
 def test_convert_file_from_doc_prints_html(tmp_path, caplog):
     with caplog.at_level("INFO"):
-        output_path = convert_file_from_doc(test_docx_path, output_dir=tmp_path, print_html=True)
+        output_path = convert_file_from_doc(test_docx_file, output_dir=tmp_path, print_html=True)
     assert output_path.exists()
     # Check that HTML was logged
     assert any("document title" in message for message in caplog.messages)
+
+
+def test_convert_all_docs_logs_conversion(tmp_path, caplog):
+    with caplog.at_level("INFO"):
+        convert_all_docs(input_dir=test_docx_dir, output_dir=tmp_path, print_html=False)
+    # Check that "Converting" and the file name are in the logs
+    assert any(
+        "Converting" in message and test_docx_file.name in message for message in caplog.messages
+    )
