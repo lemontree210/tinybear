@@ -65,4 +65,4 @@ def read_from_doc(
 
 
 if __name__ == "__main__":
-    convert_all_docs()
+    convert_all_docs()  # pragma: no cover
