@@ -15,7 +15,6 @@ p[style-name='Heading1'] => h2
 p[style-name='Heading2'] => h2
 p[style-name='Heading3'] => h3
 p[style-name='Heading4'] => h4
-r[style-name='Code'] => code
 """
 
 
