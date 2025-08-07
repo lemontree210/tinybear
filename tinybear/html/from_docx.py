@@ -7,23 +7,30 @@ from tinybear._paths import DEFAULT_INPUT_DIR, DEFAULT_OUTPUT_DIR
 
 logging.basicConfig(level=logging.INFO)
 
-STYLE_MAP = """
+DEFAULT_STYLE_MAP = """
 b => strong
 i => em
 p[style-name='Title'] => h1
-p[style-name='Heading1'] => h2
+p[style-name='Heading1'] => h1
+p[style-name='Heading 1'] => h1
 p[style-name='Heading2'] => h2
+p[style-name='Heading 2'] => h2
 p[style-name='Heading3'] => h3
+p[style-name='Heading 3'] => h3
 p[style-name='Heading4'] => h4
+p[style-name='Heading 4'] => h4
 """
 
 
 def convert_file_from_doc(
-    path_to_file: Path, output_dir: Path = DEFAULT_OUTPUT_DIR, print_html: bool = True
+    path_to_file: Path,
+    output_dir: Path = DEFAULT_OUTPUT_DIR,
+    style_map: str = DEFAULT_STYLE_MAP,
+    print_html: bool = True,
 ) -> Path:
     """Read from DOC(x) file, write to HTML file, return its path."""
 
-    html = read_from_doc(path_to_file=path_to_file)
+    html = read_from_doc(path_to_file=path_to_file, style_map=style_map)
 
     if print_html:
         logging.info(html)
@@ -49,7 +56,7 @@ def convert_all_docs(
 
 def read_from_doc(
     path_to_file: Path,
-    style_map: str = STYLE_MAP,
+    style_map: str = DEFAULT_STYLE_MAP,
 ) -> str:
     """Read binary content from doc file and produce string HTML."""
     with path_to_file.open(mode="rb") as docx_file:
