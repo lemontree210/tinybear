@@ -77,3 +77,11 @@ def test_convert_file_from_doc_with_custom_style_map(tmp_path):
     # Check for custom mapping effect
     assert "<h2>Heading level 1</h2>" in html or "<h2>Heading level 1" in html
     assert "<b>bold text</b>" in html
+
+
+def test_convert_file_from_doc_prints_html(tmp_path, caplog):
+    with caplog.at_level("INFO"):
+        output_path = convert_file_from_doc(test_docx_path, output_dir=tmp_path, print_html=True)
+    assert output_path.exists()
+    # Check that HTML was logged
+    assert any("document title" in message for message in caplog.messages)
