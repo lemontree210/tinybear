@@ -18,7 +18,7 @@ ignore_errors = true
 
 [tool.poetry]
 name = "tinybear"
-version = "0.2.0"
+version = "0.3.0"
 description = "Where you don't need pandas yet. Tools to work with TXT, CSV, HTML, XLSX etc."
 authors = ["Dmitry K <58207913+lemontree210@users.noreply.github.com>"]
 readme = "README.md"
@@ -30,11 +30,12 @@ html5lib = "^1.1"
 openpyxl = "^3.1.5"
 pyyaml = "^6.0.2"
 toml = "^0.10.2"
+mammoth = "^1.10.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
-mypy = "^1.16.1"
-ruff = "^0.12.0"
+mypy = "^1.17.1"
+ruff = "^0.12.7"
 pre-commit = "^4.2.0"
 pytest = "^8.4.1"
 pytest-cov = "^6.2.1"
