@@ -49,9 +49,13 @@ def convert_all_docs(
     print_html: bool = True,
 ) -> None:
     """Converts all .DOC(x) files in a directory."""
-    for file in input_dir.glob("*.doc*"):
-        logging.info(f"Converting {file.name}")
-        convert_file_from_doc(path_to_file=file, output_dir=output_dir, print_html=print_html)
+    if not output_dir.exists():
+        output_dir.mkdir()
+
+    for pattern in ("*.doc", "*.docx"):
+        for file in input_dir.glob(pattern):
+            logging.info(f"Converting {file.name}")
+            convert_file_from_doc(path_to_file=file, output_dir=output_dir, print_html=print_html)
 
 
 def read_from_doc(
