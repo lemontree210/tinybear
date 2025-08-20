@@ -52,7 +52,7 @@ def test_read_from_doc_with_custom_style_map():
         (r"<b>bold text</b>", "Bold text -> <b>"),
         (r"<i>italic text</i>", "Italic text -> <i>"),
         (
-            r"<b><i>bold italic text</i></b>|<i><b>bold italic text</i></b>",
+            r"<b><i>bold italic text</i></b>|<i><b>bold italic text</b></i>",
             "Bold italic text -> <b><i> or <i><b>",
         ),
     ]

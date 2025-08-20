@@ -37,7 +37,7 @@ def convert_file_from_doc(
 
     output_path = output_dir / f"{path_to_file.stem}.html"
 
-    with output_path.open(mode="w+", encoding="utf-8") as output_file:
+    with output_path.open(mode="w", encoding="utf-8") as output_file:
         output_file.write(html)
 
     return output_path
