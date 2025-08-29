@@ -18,6 +18,7 @@
 
 - 📖 [Getting Started](getting_started.md)
 - ⚡ [Usage](usage.md)
+- 🧩 [API Reference](api.md)
 
 ---
 

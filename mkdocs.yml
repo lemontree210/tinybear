@@ -3,6 +3,7 @@ nav:
   - Home: index.md
   - Getting Started: getting_started.md
   - Usage: usage.md
+  - API Reference: api.md
 docs_dir: docs
 site_dir: site
 theme:
