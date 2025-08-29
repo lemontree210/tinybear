@@ -5,3 +5,14 @@ nav:
   - Usage: usage.md
 docs_dir: docs
 site_dir: site
+theme:
+  name: material
+  features:
+    - navigation.instant  # ⚡ Instant loading
+    - navigation.tracking  # 📊 Track scroll position
+    - navigation.tabs.sticky  # 📌 Sticky navigation
+    - navigation.top  # ⬆️ Back to top button
+    - search.suggest  # 🔍 Search suggestions
+    - search.share  # 🔗 Share search
+    - header.autohide  # 🎩 Auto-hide header
+    - content.code.annotate  # 💡 Code annotations

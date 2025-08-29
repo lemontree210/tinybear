@@ -15,7 +15,7 @@ pip install tinybear
 Or clone the repository and install locally:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/lemontree210/tinybear
 cd tinybear
 pip install .
 ```
