@@ -22,7 +22,7 @@ pip install .
 
 ## Requirements
 
-TinyBear requires Python 3.7+.
+TinyBear requires Python 3.9 or newer.
 
 ---
 

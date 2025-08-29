@@ -9,7 +9,7 @@
 - Simple interface for common data tasks
 - Support for multiple data formats
 - Easy data validation
-- Designed for Python 3.7+
+- Designed for Python 3.9+
 - Minimal dependencies
 
 ---
