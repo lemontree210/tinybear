@@ -1,3 +1,7 @@
+[project.urls]
+Homepage = "https://github.com/lemontree210/tinybear"
+Documentation = "https://lemontree210.github.io/tinybear/"
+
 [tool.black]
 line-length = 99
 target-version = ['py39']
@@ -18,8 +22,9 @@ ignore_errors = true
 
 [tool.poetry]
 name = "tinybear"
-version = "0.3.0"
+version = "0.3.1"
 description = "Where you don't need pandas yet. Tools to work with TXT, CSV, HTML, XLSX etc."
+documentation = "https://lemontree210.github.io/tinybear/"
 authors = ["Dmitry K <58207913+lemontree210@users.noreply.github.com>"]
 readme = "README.md"
 
