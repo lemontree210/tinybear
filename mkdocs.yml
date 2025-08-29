@@ -1,0 +1,7 @@
+site_name: TinyBear Documentation
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - Usage: usage.md
+docs_dir: docs
+site_dir: site
