@@ -1,4 +1,7 @@
 site_name: TinyBear Documentation
+site_url: https://lemontree210.github.io/tinybear/
+extra:
+  base_url: /tinybear/
 nav:
   - Home: index.md
   - Getting Started: getting_started.md
