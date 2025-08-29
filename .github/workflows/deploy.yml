@@ -3,7 +3,7 @@ name: Deploy MkDocs to GitHub Pages (gh-pages branch)
 on:
   push:
     branches:
-      - feat/add-mkdocs
+      - master
 
 jobs:
   deploy:
