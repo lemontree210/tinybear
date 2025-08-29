@@ -1,0 +1,22 @@
+site_name: TinyBear Documentation
+site_url: https://lemontree210.github.io/tinybear/
+extra:
+  base_url: /tinybear/
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - Usage: usage.md
+  - API Reference: api.md
+docs_dir: docs
+site_dir: site
+theme:
+  name: material
+  features:
+    - navigation.instant  # ⚡ Instant loading
+    - navigation.tracking  # 📊 Track scroll position
+    - navigation.tabs.sticky  # 📌 Sticky navigation
+    - navigation.top  # ⬆️ Back to top button
+    - search.suggest  # 🔍 Search suggestions
+    - search.share  # 🔗 Share search
+    - header.autohide  # 🎩 Auto-hide header
+    - content.code.annotate  # 💡 Code annotations
